@@ -17,6 +17,8 @@ jobs:
 
       - name: Setup node environment
         uses: ./
+        with:
+          node-version: 22
 
       - name: Run prettier
         run: pnpm prettier --check .
