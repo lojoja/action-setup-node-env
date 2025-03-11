@@ -1,0 +1,32 @@
+name: Setup Node Environment
+description: Configure node environment with project dependencies
+inputs:
+  node-version:
+    description: Version Spec of the version to use. See https://github.com/actions/setup-node/blob/main/README.md
+outputs: {}
+runs:
+  using: "composite"
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+
+    - name: Install node
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - name: Get pnpm store directory
+      run: echo "PNPM_STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Setup pnpm cache
+      uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+      with:
+        path: ${{ env.PNPM_STORE_PATH }}
+        key: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: pnpm-store-
+
+    - name: Install dependencies
+      run: pnpm install
+      shell: bash
