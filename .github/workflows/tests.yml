@@ -1,0 +1,110 @@
+name: Tests
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  changes:
+    name: Identify changes
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.dedupe.outputs.should_skip }}
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Dedupe
+        id: dedupe
+        uses: lojoja/action-dedupe@main
+        with:
+          github_token: ${{ github.token }}
+          paths: |
+            - .github/workflows/tests.yml
+            - action.yml
+            - tests/*
+
+  test-setup-node-env-global:
+    name: Test setup-node-env (global)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.should_skip == 'false'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Run action-setup-node-env
+        id: action
+        uses: ./
+        with:
+          global_dependencies: >-
+            globals@16.0.0
+          node_version: "22"
+          working_directory: tests
+
+      - name: Verify node version
+        run: |
+          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v22.') && 1 || 0 }}
+
+  test-setup-node-env-no-cache:
+    name: Test setup-node-env (no cache)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.should_skip == 'false'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Run action-setup-node-env
+        id: action
+        uses: ./
+        with:
+          cache: "false"
+          node_version: "22"
+          working_directory: tests
+
+      - name: Verify node version
+        run: |
+          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v22.') && 1 || 0 }}
+
+  test-setup-node-env-project:
+    name: Test setup-node-env (project)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.should_skip == 'false'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Run action-setup-node-env
+        id: action
+        uses: ./
+        with:
+          node_version: "22"
+          working_directory: tests
+
+      - name: Verify node version
+        run: |
+          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v22.') && 1 || 0 }}
+
+  result:
+    name: Tests result
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - test-setup-node-env-global
+      - test-setup-node-env-no-cache
+      - test-setup-node-env-project
+    steps:
+      - name: Tests failed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+      - name: Tests passed
+        run: exit 0
