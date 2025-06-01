@@ -66,7 +66,7 @@ runs:
       with:
         node-version: ${{ inputs.node_version }}
         cache: ${{ inputs.cache == 'true' && 'pnpm' || '' }}
-        cache-dependency-path: inputs.global_dependencies != '' && 'global.lock' || ''
+        cache-dependency-path: ${{ inputs.global_dependencies != '' && 'global.lock' || '' }}
 
     - name: Set cache key environment vars
       if: inputs.cache == 'true'
