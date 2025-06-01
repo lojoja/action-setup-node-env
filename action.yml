@@ -44,46 +44,55 @@ runs:
         echo "PNPM_STORE_PATH=$cache" >> $GITHUB_ENV
       shell: bash
 
+    - name: Set cache hash environment var
+      if: inputs.cache == 'true'
+      run: |
+        global_deps="${{ inputs.global_dependencies }}"
+
+        if [[ ! -z $global_deps ]]
+        then
+          hash="$(echo -n "$global_deps" | sha256sum)"
+          echo $hash >> global.lock
+        else
+          hash="${{ hashFiles(format('{0}/**/pnpm-lock.yaml', inputs.working_directory)) }}"
+        fi
+
+        echo "CACHE_HASH=$hash" >> $GITHUB_ENV
+      shell: bash
+
     - name: Install node
       id: node
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
       with:
         node-version: ${{ inputs.node_version }}
         cache: ${{ inputs.cache == 'true' && 'pnpm' || '' }}
+        cache-dependency-path: inputs.global_dependencies != '' && 'global.lock' || ''
 
     - name: Set cache key environment vars
-      if: ${{ inputs.cache == 'true' }}
+      if: inputs.cache == 'true'
       run: |
         base_cache_key="${{ runner.os }}-node-${{ steps.node.outputs.node-version }}-pnpm-"
-        global_deps="${{ inputs.global_dependencies }}"
-
-        if [[ ! -z $global_deps ]]
-        then
-          hash="$(echo -n "$global_deps" | sha256sum)"
-        else
-          hash="${{ hashFiles(format('{0}/**/pnpm-lock.yaml', inputs.working_directory)) }}"
-        fi
 
         echo "BASE_CACHE_KEY=$base_cache_key" >> $GITHUB_ENV
-        echo "CACHE_KEY=${base_cache_key}${hash}" >> $GITHUB_ENV
+        echo "CACHE_KEY=${base_cache_key}${{ env.CACHE_HASH }}" >> $GITHUB_ENV
       shell: bash
       working-directory: ${{ inputs.working_directory }}
 
     - name: Setup pnpm dependency cache
       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
-      if: ${{ inputs.cache == 'true' }}
+      if: inputs.cache == 'true'
       with:
         path: ${{ env.PNPM_STORE_PATH }}
         key: ${{ env.CACHE_KEY }}
         restore-keys: ${{ env.BASE_CACHE_KEY }}
 
     - name: Install global dependencies
-      if: ${{ inputs.global_dependencies != '' }}
+      if: inputs.global_dependencies != ''
       run: pnpm add --global ${{ inputs.global_dependencies }}
       shell: bash
 
     - name: Install dependencies
-      if: ${{ inputs.global_dependencies == '' }}
+      if: inputs.global_dependencies == ''
       run: |
         shopt -s globstar nullglob
         for lockfile in **/pnpm-lock.yaml
