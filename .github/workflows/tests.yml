@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: ${{ env.NODE_VERSION }}
+  NODE_VERSION: "22"
 
 jobs:
   changes:
