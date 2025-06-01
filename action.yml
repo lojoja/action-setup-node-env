@@ -92,4 +92,4 @@ runs:
           pnpm install
         done
       shell: bash
-      working-directory: ${{ inputs.project_directory }}
+      working-directory: ${{ inputs.working_directory }}
