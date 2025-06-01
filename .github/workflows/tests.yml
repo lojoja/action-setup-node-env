@@ -47,7 +47,6 @@ jobs:
           global_dependencies: >-
             globals@16.0.0
           node_version: "22"
-          working_directory: tests/global
 
       - name: Verify node version
         run: |
