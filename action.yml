@@ -29,6 +29,8 @@ runs:
   steps:
     - name: Install pnpm
       uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+      with:
+        version: ${{ inputs.global_dependencies != '' && '10' || '' }}
 
     - name: Set pnpm store environment var
       run: |
