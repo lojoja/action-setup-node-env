@@ -94,11 +94,9 @@ runs:
     - name: Install dependencies
       if: inputs.global_dependencies == ''
       run: |
-        shopt -s globstar nullglob
-        for lockfile in **/pnpm-lock.yaml
+        for lockfile in $(find ${{ github.workspace }} -name "pnpm-lock.yaml")
         do
-          lockfile_abs="$(readlink -f $lockfile)"
-          cd "$(dirname $lockfile_abs)"
+          cd "$(dirname $lockfile)"
           pnpm install
         done
       shell: bash
