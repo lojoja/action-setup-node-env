@@ -97,7 +97,8 @@ runs:
         shopt -s globstar nullglob
         for lockfile in **/pnpm-lock.yaml
         do
-          cd "$(dirname $lockfile)"
+          lockfile_abs="$(readlink -f $lockfile)"
+          cd "$(dirname $lockfile_abs)"
           pnpm install
         done
       shell: bash
