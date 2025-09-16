@@ -62,7 +62,7 @@ runs:
 
     - name: Install node
       id: node
-      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
       with:
         node-version: ${{ inputs.node_version }}
         cache: ${{ inputs.cache == 'true' && 'pnpm' || '' }}
@@ -79,7 +79,7 @@ runs:
       working-directory: ${{ inputs.working_directory }}
 
     - name: Setup pnpm dependency cache
-      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
       if: inputs.cache == 'true'
       with:
         path: ${{ env.PNPM_STORE_PATH }}
