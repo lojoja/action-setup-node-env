@@ -28,7 +28,7 @@ runs:
   using: composite
   steps:
     - name: Install pnpm
-      uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+      uses: pnpm/action-setup@08c4be7e2e672a47d11bd04269e27e5f3e8529cb
       with:
         version: ${{ inputs.global_dependencies != '' && '10' || '' }}
 
@@ -80,7 +80,7 @@ runs:
       working-directory: ${{ inputs.working_directory }}
 
     - name: Setup pnpm dependency cache
-      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
       if: inputs.cache == 'true'
       with:
         path: ${{ env.PNPM_STORE_PATH }}
