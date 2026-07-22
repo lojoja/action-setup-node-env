@@ -43,7 +43,7 @@ jobs:
     if: needs.changes.outputs.should_skip == 'false' || ! fromJSON(needs.changes.outputs.named).prettier.should_skip
     steps:
       - name: Check out repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Run prettier
         uses: lojoja/action-prettier@main
@@ -57,7 +57,7 @@ jobs:
   #  if: needs.changes.outputs.should_skip == 'false' || ! fromJSON(needs.changes.outputs.named).tests.should_skip
   #  steps:
   #    - name: Check out repository
-  #      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+  #      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
   #
   #    - name: Clean repository
   #      run: rm **/package.json **/pnpm-lock.yaml
@@ -82,7 +82,7 @@ jobs:
     if: needs.changes.outputs.should_skip == 'false' || ! fromJSON(needs.changes.outputs.named).tests.should_skip
     steps:
       - name: Check out repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Run action-setup-node-env
         id: action
@@ -103,7 +103,7 @@ jobs:
     if: needs.changes.outputs.should_skip == 'false' || ! fromJSON(needs.changes.outputs.named).tests.should_skip
     steps:
       - name: Check out repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Run action-setup-node-env
         id: action
