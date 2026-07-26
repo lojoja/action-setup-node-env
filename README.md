@@ -9,7 +9,7 @@ This repository is not meant to be referenced in third-party workflows; please f
 | Name                | Description                                                                                                                                         | Default |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | cache               | Whether to cache dependencies.                                                                                                                      | "true"  |
-| node_version        | The node version to use in version spec syntax.                                                                                                     | "22"    |
+| node_version        | The node version to use in version spec syntax.                                                                                                     | "24"    |
 | global_dependencies | A space-separated list of packages to install globally. Dependencies in "package.json" files, if present, will not be installed when this is given. | ""      |
 | working_directory   | The working directory for the action.                                                                                                               | "."     |
 
@@ -37,7 +37,7 @@ jobs:
           global_dependencies: >-
             eslint@9.0.0
             globals@16.0.0
-          node_version: "22"
+          node_version: "24"
 ```
 
 ### Project dependencies
@@ -53,7 +53,7 @@ jobs:
         id: node
         with:
           cache: "true"
-          node_version: "22"
+          node_version: "24"
 ```
 
 ## License

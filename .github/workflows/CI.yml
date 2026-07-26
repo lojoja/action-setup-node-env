@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: "22"
+  NODE_VERSION: "24"
 
 jobs:
   changes:
@@ -94,7 +94,7 @@ jobs:
 
       - name: Verify node version
         run: |
-          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v22.') && 1 || 0 }}
+          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v24.') && 1 || 0 }}
 
   test-setup-node-env-project:
     name: Test setup-node-env (project)
@@ -114,7 +114,7 @@ jobs:
 
       - name: Verify node version
         run: |
-          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v22.') && 1 || 0 }}
+          exit ${{ ! startsWith(steps.action.outputs.node_version, 'v24.') && 1 || 0 }}
 
   ci-result:
     name: CI Result
